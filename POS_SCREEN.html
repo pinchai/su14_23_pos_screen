@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>POS Screen</title>
+  <link rel="stylesheet" href="./dist/boostrap.css">
+  <link rel="stylesheet" href="./dist/card.css">
+</head>
+<body>
+<div class="container-fluid" id="app">
+  <div class="row">
+    <div class="col-lg-8 col-md-8 col-sm-12">
+      <div class="row">
+        <div
+          v-for="(item, index) in product_list"
+          :key="index"
+          class="col-md-3 mt-3"
+          @click="productCardOnClick(item)"
+        >
+          <div class="card">
+            <div class="image-container">
+              <div class="first">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="discount">{{ item.category }}</span>
+                  <span class="wishlist">
+                    <i class="fa fa-heart-o"></i>
+                  </span>
+                </div>
+              </div>
+              <center>
+                <img
+                  style="object-fit: cover; height: 170px;"
+                  :src="item.image"
+                  class="img-fluid rounded thumbnail-image"
+                >
+              </center>
+            </div>
+            <div class="product-detail-container p-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="dress-name" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  {{ item.title }}</h5>
+                <div class="d-flex flex-column mb-2">
+                  <span class="new-price">${{ item.price }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-12">
+      <div class="table-responsive">
+        <table class="table table-sm table-borderless table-striped">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item, index) in selected_product_list"
+            :key="index"
+          >
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.qty }}</td>
+            <td>{{ item.price }}$</td>
+            <td>{{ (item.qty * item.price ).toFixed(2) }}$</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="./dist/boostrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="./dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+<script>
+    const {createApp} = Vue
+    createApp({
+        created() {
+            this.fetchProduct()
+        },
+        data() {
+            return {
+                product_list: [],
+                selected_product_list: []
+            }
+        },
+        methods: {
+            fetchProduct() {
+                let vm = this
+                $.LoadingOverlay("show");
+                axios.get('https://fakestoreapi.com/products')
+                    .then(function (response) {
+                        vm.product_list = response.data
+                        console.log(vm.product_list)
+                        $.LoadingOverlay("hide");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+            },
+            productCardOnClick(item){
+                let dpl = this.selected_product_list.find(obj=>{
+                    return obj.title == item.title
+                })
+                if (dpl == undefined){
+                    item.qty = 1
+                    this.selected_product_list.push(item)
+                }else {
+                    dpl.qty++
+                }
+
+
+            }
+        }
+    }).mount('#app')
+</script>
+</html>

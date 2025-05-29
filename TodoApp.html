@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<style>
+  ul {
+      list-style-type: none;
+  }
+  ul li {
+      font-size: 20px;
+      font-weight: bolder;
+      margin-bottom: 5px;
+  }
+  input[type=button] {
+      margin-right: 4px;
+      margin-left: 4px;
+  }
+</style>
+<body>
+<center>
+  <div id="app">
+    <label for="input">Task</label>
+    <input type="text" id="input" v-model="input_task">
+    <input  v-if="global_index == null" type="button" value="Add" @click="onAddTask()">
+    <input  v-if="global_index !== null" type="button" value="Edit" @click="onEditTask()">
+    <hr>
+    <ul>
+      <li
+        v-for="(item, index) in task_list"
+        :key="'task_list_'+index"
+      >
+        <span v-if="!item.is_done">{{ index +1 }}. {{ item.name }}</span>
+        <del
+          style="color: green"
+          v-if="item.is_done"
+        >{{ index +1 }}. {{ item.name }}</del>
+
+        <input
+          v-if="!item.is_done"
+          @click="onDoneTask(index)"
+          type="button"
+          value="done"
+        >
+        <input @click="getEdit(index, item.name)" type="button" value="edit">
+        <input @click="onDeleteTask(index)" type="button" value="delete">
+      </li>
+    </ul>
+  </div>
+</center>
+</body>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const {createApp} = Vue
+    createApp({
+        data() {
+            return {
+                global_index: null,
+                input_task: null,
+                task_list: [
+                    {
+                        name: 'A',
+                        is_done: false
+                    },
+                    {
+                        name: 'B',
+                        is_done: false
+                    }
+                ]
+            }
+        },
+        methods: {
+            onAddTask(){
+                this.task_list.push(
+                    {
+                        name: this.input_task,
+                        is_done: false
+                    }
+                )
+
+                this.input_task = ''
+                document.getElementById('input').focus()
+            },
+            onDeleteTask(index){
+                if (confirm("do you want to delete ?")){
+                    this.task_list.splice(index, 1)
+                }
+            },
+            onDoneTask(index){
+                this.task_list[index].is_done = true
+            },
+            getEdit(index, name){
+                this.global_index = index
+                this.input_task = name
+            },
+            onEditTask(){
+                this.task_list[this.global_index].name  = this.input_task
+
+                this.global_index = null
+                this.input_task = ''
+                document.getElementById('input').focus()
+            }
+        }
+    }).mount('#app')
+</script>
+</html>

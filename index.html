@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue CDN</title>
+</head>
+<style>
+    input[type=button] {
+        font-size: 19px;
+        background-color: rosybrown;
+        padding: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+        border-radius: 10px;
+        color: red;
+    }
+</style>
+<body>
+<center>
+  <h3>Vue CDN</h3>
+  <div id="app">
+    <label>Value A: </label>
+    <input type="text" v-model="value_a">
+    <br>
+    <br>
+    <label>Value B: </label>
+    <input type="number" v-model="value_b">
+    <br>
+    <br>
+    <h1>{{ value_a }} {{ operator }} {{ value_b }} = {{ result }}</h1>
+    <br>
+    <input @click="add()" type="button" value="+">
+    <input @click="minus()" type="button" value="-">
+    <input @click="multiply()" type="button" value="x">
+    <input @click="division()" type="button" value="/">
+    <input @click="mod()" type="button" value="%">
+  </div>
+</center>
+</body>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script>
+    const {createApp} = Vue
+    createApp({
+        data() {
+            return {
+                value_a: 0,
+                value_b: 0,
+                result: 0,
+                operator: '+',
+            }
+        },
+        methods: {
+            add(){
+                this.operator = '+'
+                this.result = parseFloat(this.value_a) + parseFloat(this.value_b)
+            },
+            minus(){
+                this.operator = '-'
+                this.result = parseFloat(this.value_a) - parseFloat(this.value_b)
+            },
+            multiply(){
+                this.operator = 'x'
+                this.result = parseFloat(this.value_a) * parseFloat(this.value_b)
+            },
+            division(){
+                this.operator = '/'
+                this.result = parseFloat(this.value_a) / parseFloat(this.value_b)
+            },
+            mod(){
+                this.operator = '%'
+                this.result = parseFloat(this.value_a) % parseFloat(this.value_b)
+            }
+        }
+    }).mount('#app')
+</script>
+</html>
